@@ -32,17 +32,63 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const toyCollection = client.db('toysZone').collection('toys');
+//     const toyCollection = client.db('toysZone').collection('toys');
+    const toysCollection = client.db('toysZone').collection('newToys');
     console.log('database connected');
 
-//     sent data to db
 
-app.post('/postToys', async(req, res)=>{
+
+// some data by email and user name;
+
+
+//  app.get('/allToys', async(req, res)=>{
+//       console.log(req.query.email);
+//       let query = {}
+//       if(req.query?.email){
+//            query = {email:req.query.email}
+
+//       }
+//       const result = await toyCollection.find(query).toArray();
+//       res.send(result);
+//  })
+
+//  app.get('/allToys', async(req, res)=>{
+//       console.log(req.query.email);
+//       let query = {}
+//       if(req.query?.email){
+//             query = {email: req.query.name}
+
+//       }
+//       const result = await toyCollection.find(query).toArray();
+//       res.send(result)
+//  })
+
+// //     sent data to db
+
+// app.post('/postToys', async(req, res)=>{
+//       const body = req.body;
+//       const result = await toyCollection.insertOne(body);
+//       res.send(result)
+
+
+// })
+
+app.get('/someToys', async(req, res)=>{
+      let query = {};
+      if(req.query.email){
+            query = {email: req.query.email};
+
+      }
+      const result = await toysCollection.find(query).toArray();
+      res.send(result);
+})
+
+app.post('/setToys', async(req, res)=>{
+      console.log(req.body);
+
       const body = req.body;
-      const result = await toyCollection.insertOne(body);
-      res.send(result)
-
-
+      const result = await toysCollection.insertOne(body);
+      res.send(result);
 })
 
 
