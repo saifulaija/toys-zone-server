@@ -36,7 +36,22 @@ async function run() {
     const toysCollection = client.db('toysZone').collection('newToys');
     console.log('database connected');
 
+    const indexKeys = {toyName: 1, Category: 1};
+    const indexOptions ={name:toyNameCategory};
+    const result = await toysCollection.createIndex(indexKeys, indexOptions);
 
+    app.get('/toysSearch/:text', async(req,res)=>{
+      const searchText = req.params.text;
+      const result = await toysCollection.find({
+            $or:[
+                  {toyName:{$regex: text, $options:'i'}},
+                  {Category:{$regex: text, $options:'i'}}
+            ],
+      }).toArray();
+      res.send(result);
+    })
+
+ 
 
 // some data by email and user name;
 
@@ -124,6 +139,19 @@ app.put('/setToys/:id', async(req, res)=>{
       const result = await toysCollection.updateOne(filter, toy, options);
       res.send(result);
 })
+
+
+app.get('/allToys', async(req, res)=>{
+      const result = await toysCollection.find({}).toArray();
+      res.send(result);
+
+})
+
+
+// app.get('/allToys', async(req, res)=>{
+//       const result = await toysCollection.find().toArray();
+//       res.send(result)
+// })
 
 
 
