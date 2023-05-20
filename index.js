@@ -116,6 +116,29 @@ app.get('/detailsId/:id', async(req, res)=>{
       res.send(result);
 })
 
+
+// filter by category
+ app.get("/filter/:text", async(req,res)=>{
+  console.log(req.params.text);
+   if(req.params.text == "Police" || req.params.text == "Regular" || req.params.text == "Sports"){
+    const result = await toysCollection.find({Category:req.params.text}).toArray();
+    console.log(result);
+    return res.send(result)
+   }
+
+   const result = await toysCollection.find({}).toArray();
+   res.send(result)
+
+
+
+ })
+// for sorting
+
+ app.get('/toys', async(req, res)=>{
+  const result = await toysCollection.find({}).sort({name:1}).toArray();
+  res.send(result);
+ })
+
     
 
 
@@ -140,3 +163,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Toys is running on port:${port}`);
 });
+
