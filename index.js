@@ -46,6 +46,7 @@ async function run() {
             { Category: { $regex: searchText, $options: "i" } },
           ],
         })
+        .limit(20)
         .toArray();
       res.send(result);
     });
@@ -137,6 +138,18 @@ app.get('/detailsId/:id', async(req, res)=>{
  app.get('/toys', async(req, res)=>{
   const result = await toysCollection.find({}).sort({name:1}).toArray();
   res.send(result);
+ })
+
+
+
+ app.get('/sorts', async(req, res)=>{
+   const result = await toysCollection.find({}).sort({price:-1}).toArray();
+   res.send(result)
+ })
+
+ app.get('/sortsD', async(req, res)=>{
+  const result = await toysCollection.find({}).sort({price: 1}).toArray();
+  res.send(result)
  })
 
     
