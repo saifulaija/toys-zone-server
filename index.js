@@ -133,6 +133,14 @@ app.get('/detailsId/:id', async(req, res)=>{
 
 
  })
+
+
+//  get all toys 
+
+app.get('/all-toys', async(req, res)=>{
+  const result = await toysCollection.find().toArray()
+  res.send(result)
+})
 // for sorting
 
  app.get('/toys', async(req, res)=>{
@@ -151,6 +159,7 @@ app.get('/detailsId/:id', async(req, res)=>{
   const result = await toysCollection.find({}).sort({price: 1}).toArray();
   res.send(result)
  })
+
 
     
 
