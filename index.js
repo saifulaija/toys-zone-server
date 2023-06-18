@@ -51,13 +51,30 @@ async function run() {
       res.send(result);
     });
 
-   
     app.get("/someToys", async (req, res) => {
       let query = {};
       if (req.query.email) {
         query = { email: req.query.email };
       }
       const result = await toysCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // practise
+
+    // get all toys by email and sorting
+
+    app.get("/products/:email", async (req, res) => {
+      const sort = req.query.sort;
+      const email = req.params.email;
+
+      const query = { email: email };
+      const options = {
+        sort: {
+          price: sort === "asc" ? 1 : -1,
+        },
+      };
+      const result = await toysCollection.find(query, options).toArray();
       res.send(result);
     });
 
@@ -102,67 +119,64 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/allToys", async(req, res) => {
+    app.get("/allToys", async (req, res) => {
       const result = await toysCollection.find({}).toArray();
       res.send(result);
     });
 
+    //     view details id get
 
-//     view details id get
-
-app.get('/detailsId/:id', async(req, res)=>{
+    app.get("/detailsId/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) };
       const result = await toysCollection.findOne(query);
       res.send(result);
-})
+    });
 
+    // filter by category
+    app.get("/filter/:text", async (req, res) => {
+      console.log(req.params.text);
+      if (
+        req.params.text == "Police" ||
+        req.params.text == "Regular" ||
+        req.params.text == "Sports"
+      ) {
+        const result = await toysCollection
+          .find({ Category: req.params.text })
+          .toArray();
+        console.log(result);
+        return res.send(result);
+      }
 
-// filter by category
- app.get("/filter/:text", async(req,res)=>{
-  console.log(req.params.text);
-   if(req.params.text == "Police" || req.params.text == "Regular" || req.params.text == "Sports"){
-    const result = await toysCollection.find({Category:req.params.text}).toArray();
-    console.log(result);
-    return res.send(result)
-   }
+      const result = await toysCollection.find({}).toArray();
+      res.send(result);
+    });
 
-   const result = await toysCollection.find({}).toArray();
-   res.send(result)
+    //  get all toys
 
+    app.get("/all-toys", async (req, res) => {
+      const result = await toysCollection.find().toArray();
+      res.send(result);
+    });
+    // for sorting
 
+    app.get("/toys", async (req, res) => {
+      const result = await toysCollection.find({}).sort({ name: 1 }).toArray();
+      res.send(result);
+    });
 
- })
+    app.get("/sorts", async (req, res) => {
+      const result = await toysCollection
+        .find({})
+        .sort({ price: -1 })
+        .toArray();
+      res.send(result);
+    });
 
-
-//  get all toys 
-
-app.get('/all-toys', async(req, res)=>{
-  const result = await toysCollection.find().toArray()
-  res.send(result)
-})
-// for sorting
-
- app.get('/toys', async(req, res)=>{
-  const result = await toysCollection.find({}).sort({name:1}).toArray();
-  res.send(result);
- })
-
-
-
- app.get('/sorts', async(req, res)=>{
-   const result = await toysCollection.find({}).sort({price:-1}).toArray();
-   res.send(result)
- })
-
- app.get('/sortsD', async(req, res)=>{
-  const result = await toysCollection.find({}).sort({price: 1}).toArray();
-  res.send(result)
- })
-
-
-    
-
+    app.get("/sortsD", async (req, res) => {
+      const result = await toysCollection.find({}).sort({ price: 1 }).toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -176,8 +190,6 @@ app.get('/all-toys', async(req, res)=>{
 }
 run().catch(console.dir);
 
-
-
 app.get("/", (req, res) => {
   res.send("Toys is running.....");
 });
@@ -185,4 +197,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Toys is running on port:${port}`);
 });
-
